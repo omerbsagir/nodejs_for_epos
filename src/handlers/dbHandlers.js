@@ -32,12 +32,3 @@ const getUser = async (email) => {
     }
 };
 
-// Kullanıcı ekleme örneği
-addUser({
-    email: 'user@example.com',
-    phone: '1234567890',
-    password: 'hashed_password',
-});
-
-// Kullanıcı alma örneği
-getUser('user@example.com');
