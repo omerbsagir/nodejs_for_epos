@@ -8,14 +8,13 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
 const handleLogin = async (event) => {
-    const { email,phone, password } = JSON.parse(event.body);
+    const { email, password } = JSON.parse(event.body);
     
     const params = {
         AuthFlow: 'USER_PASSWORD_AUTH',
         ClientId: process.env.COGNITO_CLIENT_ID,
         AuthParameters: {
             USERNAME: email,
-            PHONE : phone,
             PASSWORD: password
         }
     };
