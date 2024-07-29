@@ -1,9 +1,9 @@
-const authHandlers = require('./handlers/authHandlers');
-const paymentHandlers = require('./handlers/paymentHandlers');
-const userHandlers = require('./handlers/userHandlers');
-const activationHandlers = require('./handlers/activationHandlers');
-const walletHandlers = require('./handlers/walletHandlers');
-const walletHandlers = require('./handlers/nfcHandlers');
+const authHandlers = require('./src/handlers/authHandlers');
+const paymentHandlers = require('./src/handlers/paymentHandlers');
+const userHandlers = require('./src/handlers/userHandlers');
+const activationHandlers = require('./src/handlers/activationHandlers');
+const walletHandlers = require('./src/handlers/walletHandlers');
+const nfcHandlers = require('./src/handlers/nfcHandlers');
 
 exports.handler = async (event) => {
     try {
