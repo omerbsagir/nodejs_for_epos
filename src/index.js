@@ -1,6 +1,9 @@
 const authHandlers = require('./handlers/authHandlers');
 const paymentHandlers = require('./handlers/paymentHandlers');
 const userHandlers = require('./handlers/userHandlers');
+const activationHandlers = require('./handlers/activationHandlers');
+const walletHandlers = require('./handlers/walletHandlers');
+const walletHandlers = require('./handlers/nfcHandlers');
 
 exports.handler = async (event) => {
     try {
@@ -11,6 +14,9 @@ exports.handler = async (event) => {
         let statusCode;
 
         switch (path) {
+
+            // auth
+
             case '/login':
                 if (method === 'POST') {
                     responseMessage = await authHandlers.handleLogin(event);
@@ -30,10 +36,30 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
-
-            case '/payment':
+            case '/logout':
                 if (method === 'POST') {
-                    responseMessage = await paymentHandlers.handlePayment(event);
+                    responseMessage = await authHandlers.handleLogout(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;
+            case '/protected':
+                if (method === 'POST') {
+                    responseMessage = await authHandlers.handleProtected(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;    
+
+            //nfc
+
+            case '/verify':
+                if (method === 'POST') {
+                    responseMessage = await nfcHandlers.handleVerify(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
@@ -41,9 +67,9 @@ exports.handler = async (event) => {
                 }
                 break;
 
-            case '/user':
+            case '/initiate':
                 if (method === 'GET') {
-                    responseMessage = await userHandlers.handleGetUser(event);
+                    responseMessage = await nfcHandlers.handleInitiate(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
@@ -51,6 +77,68 @@ exports.handler = async (event) => {
                 }
                 break;
 
+
+            //payment
+
+            case '/charge':
+                if (method === 'GET') {
+                    responseMessage = await paymentHandlersHandlers.handleCharge(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;    
+                case '/refund':
+                    if (method === 'GET') {
+                        responseMessage = await paymentHandlersHandlers.handleRefund(event);
+                        statusCode = 200;
+                    } else {
+                        responseMessage = 'Method Not Allowed';
+                        statusCode = 405;
+                    }
+                    break;
+                case '/transaction-id':
+                if (method === 'GET') {
+                    responseMessage = await paymentHandlersHandlers.returnTransactionId(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;    
+                
+            // activation
+            case '/activate':
+                if (method === 'GET') {
+                    responseMessage = await activationHandlersrHandlers.handleActivate(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;    
+            case '/company-id':
+                if (method === 'GET') {
+                    responseMessage = await activationHandlers.returnCompanyId(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;    
+            
+            //wallet
+
+            case '/update-wallet':
+                if (method === 'GET') {
+                    responseMessage = await walletHandlers.handleUpdateWallet(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;        
             default:
                 responseMessage = 'Not Found';
                 statusCode = 404;
