@@ -1,4 +1,6 @@
 const AWS = require('aws-sdk');
+const jwt = require('jsonwebtoken');
+
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
 const handleLogin = async (event) => {
