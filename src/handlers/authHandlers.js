@@ -14,7 +14,7 @@ const handleLogin = async (event) => {
 
     const params = {
         TableName: process.env.USERS_TABLE,
-        Key: { email }
+        Key: { userId }
     };
 
     try {
