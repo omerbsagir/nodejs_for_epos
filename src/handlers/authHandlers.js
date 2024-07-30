@@ -22,6 +22,11 @@ const handleLogin = async (event) => {
     try {
 
         const authResult = await cognito.initiateAuth(params).promise();
+
+        if (!authResult.AuthenticationResult || !authResult.AuthenticationResult.IdToken) {
+            console.error("AuthenticationResult: ", authResult);
+            throw new Error("Authentication failed. IdToken is missing.");
+          }
         
         const idToken = authResult.AuthenticationResult.IdToken;
         const accessToken = authResult.AuthenticationResult.AccessToken;
