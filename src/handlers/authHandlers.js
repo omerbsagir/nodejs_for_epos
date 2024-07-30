@@ -20,8 +20,9 @@ const handleLogin = async (event) => {
     };
 
     try {
-        const authResult = await cognito.initiateAuth(params).promise();
 
+        const authResult = await cognito.initiateAuth(params).promise();
+        
         const idToken = authResult.AuthenticationResult.IdToken;
         const accessToken = authResult.AuthenticationResult.AccessToken;
         const refreshToken = authResult.AuthenticationResult.RefreshToken;
