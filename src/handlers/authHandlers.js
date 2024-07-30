@@ -54,7 +54,7 @@ const handleLogin = async (event) => {
 
 
 const handleRegister = async (event) => {
-    const { email, phone, password } = JSON.parse(event.body);
+    const { email, phone, password ,role,adminId} = JSON.parse(event.body);
 
     const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
     const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
@@ -67,7 +67,9 @@ const handleRegister = async (event) => {
             email,
             phone,
             password: hashedPassword, // Hashlenmiş parolayı kaydetme
-            createdAt
+            createdAt,
+            role,
+            adminId
         }
     };
 
@@ -81,7 +83,8 @@ const handleRegister = async (event) => {
             Username: email,
             UserAttributes: [
                 { Name: 'email', Value: email },
-                { Name: 'phone_number', Value: phone }
+                { Name: 'phone_number', Value: phone } ,
+                { Name: 'custom-role', Value: role}
             ],
             MessageAction: 'SUPPRESS', // Do not send welcome email
             TemporaryPassword: password // Geçici parola, kullanıcı ilk girişte değiştirmeli
@@ -104,4 +107,56 @@ const handleRegister = async (event) => {
 };
 
 
-module.exports = { handleLogin ,handleRegister };
+
+
+
+
+const handleProtected = async (event) => {
+    try {
+        // Authorization header'ından token'ı al
+        const token = event.headers.Authorization || event.headers.authorization;
+
+        if (!token) {
+            return {
+                statusCode: 401,
+                body: JSON.stringify({ message: 'No token provided' })
+            };
+        }
+
+        // Token'ı doğrula
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        // JWT'nin geçerli olduğunu ve kullanıcıyı doğruladığını doğrula
+        if (!decoded || !decoded.email) {
+            return {
+                statusCode: 403,
+                body: JSON.stringify({ message: 'Invalid token' })
+            };
+        }
+
+        // Kullanıcı rolünü kontrol et
+        const userRole = decoded.role;
+        if (userRole !== 'admin') {
+            return {
+                statusCode: 403,
+                body: JSON.stringify({ message: 'Access denied' })
+            };
+        }
+
+        // Yetkili kullanıcıya erişim izni ver
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'Access granted', user: decoded })
+        };
+    } catch (error) {
+        console.error('Authorization error: ', error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Authorization failed', error: error.message })
+        };
+    }
+};
+
+
+module.exports = { handleLogin ,handleRegister , handleProtected};
