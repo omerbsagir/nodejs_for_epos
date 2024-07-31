@@ -5,7 +5,7 @@ const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const handleGetUser = async (email) => {
     const params = {
-        TableName: process.env.USERS-TABLE,
+        TableName: process.env.USERS_TABLE,
         Key: { email },
     };
     
