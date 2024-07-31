@@ -36,7 +36,6 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
-                
             case '/registerNewUser':
                 if (method === 'POST') {
                     responseMessage = await authHandlers.handleRegisterForUserRole(event);
@@ -55,7 +54,27 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;    
-
+            
+            //calisanlar
+    
+            case '/getUser':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.handleGetUser(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;
+            case '/getUser':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.handleGetUsersByAdminId(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;
             //nfc
 
             case '/verify':
