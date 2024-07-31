@@ -26,12 +26,9 @@ const handleGetUsersAdmin = async (event) => {
     
     const params = {
         TableName: process.env.USERS_TABLE,
-        IndexName: 'adminId-index',
-        KeyConditionExpression: 'adminId = :adminId',
-        ExpressionAttributeValues: {
-            ':adminId': adminId
+        Key: { adminId },
         }
-    };
+    
 
     try {
         const result = await dynamoDb.query(params).promise();
