@@ -1,5 +1,5 @@
 const AWS = require('aws-sdk');
-const dynamodb = new AWS.DynamoDB.DocumentClient();
+const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 
 
@@ -10,9 +10,11 @@ const handleGetUser = async (email) => {
     };
     
     try {
-        const result = await dynamodb.get(params).promise();
+        const result = await dynamoDb.get(params).promise();
         console.log('User data:', result.Item);
         return result.Item;
+
+        
     } catch (err) {
         console.error('Error getting user:', err);
     }
