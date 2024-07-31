@@ -54,7 +54,7 @@ const handleLogin = async (event) => {
 
 
 const handleRegister = async (event) => {
-    const { email, phone, password ,role,adminId} = JSON.parse(event.body);
+    const { email, phone, password } = JSON.parse(event.body);
 
     const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
     const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
@@ -68,7 +68,7 @@ const handleRegister = async (event) => {
             phone,
             password: hashedPassword, // Hashlenmiş parolayı kaydetme
             createdAt,
-            role:1,
+            role:'admin',
         }
     };
 
@@ -83,7 +83,7 @@ const handleRegister = async (event) => {
             UserAttributes: [
                 { Name: 'email', Value: email },
                 { Name: 'phone_number', Value: phone } ,
-                { Name: 'custom-role', Value: role}
+                { Name: 'custom:role', Value: role}
             ],
             MessageAction: 'SUPPRESS', // Do not send welcome email
             TemporaryPassword: password // Geçici parola, kullanıcı ilk girişte değiştirmeli
@@ -106,7 +106,7 @@ const handleRegister = async (event) => {
 };
 
 const handleRegisterForUserRole = async (event) => {
-    const { email, phone, password ,role,adminId} = JSON.parse(event.body);
+    const { email, phone, password,adminId } = JSON.parse(event.body);
 
     const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
     const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
@@ -120,7 +120,7 @@ const handleRegisterForUserRole = async (event) => {
             phone,
             password: hashedPassword, // Hashlenmiş parolayı kaydetme
             createdAt,
-            role: 2,
+            role: 'user',
             adminId
         }
     };
@@ -136,7 +136,7 @@ const handleRegisterForUserRole = async (event) => {
             UserAttributes: [
                 { Name: 'email', Value: email },
                 { Name: 'phone_number', Value: phone } ,
-                { Name: 'custom-role', Value: role}
+                { Name: 'custom:role', Value: role}
             ],
             MessageAction: 'SUPPRESS', // Do not send welcome email
             TemporaryPassword: password // Geçici parola, kullanıcı ilk girişte değiştirmeli
@@ -185,7 +185,7 @@ const handleProtected = async (event) => {
             statusCode: 200,
             body: JSON.stringify({ message: 'Access granted', user: decoded })
         };
-        
+
     } catch (error) {
         console.error('Authorization error: ', error);
 
