@@ -199,4 +199,4 @@ const handleProtected = async (event) => {
 };
 
 
-module.exports = { handleLogin ,handleRegister , handleProtected};
+module.exports = { handleLogin ,handleRegister ,handleRegisterForUserRole, handleProtected};

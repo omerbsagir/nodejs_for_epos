@@ -36,9 +36,10 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
-            case '/logout':
+                
+            case '/registerNewUser':
                 if (method === 'POST') {
-                    responseMessage = await authHandlers.handleLogout(event);
+                    responseMessage = await authHandlers.handleRegisterForUserRole(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
