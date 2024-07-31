@@ -2,10 +2,10 @@ const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 
-// Kullanıcı verilerini almak için örnek fonksiyon
-const getUser = async (email) => {
+
+const handleGetUser = async (email) => {
     const params = {
-        TableName: 'accountsSanalPos',
+        TableName: process.env.USERS-TABLE,
         Key: { email },
     };
     
@@ -18,3 +18,31 @@ const getUser = async (email) => {
     }
 };
 
+const handleGetUsersByAdminId = async (adminId) => {
+
+    const params = {
+        TableName: process.env.USERS_TABLE,
+        IndexName: 'adminId-index',
+        KeyConditionExpression: 'adminId = :adminId',
+        ExpressionAttributeValues: {
+            ':adminId': adminId
+        }
+    };
+
+    try {
+        const result = await dynamoDb.query(params).promise();
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result.Items)
+        };
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Could not fetch users', error: error.message })
+        };
+    }
+};
+
+module.exports = {handleGetUsersByAdminId,handleGetUser};
