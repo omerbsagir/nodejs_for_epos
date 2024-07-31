@@ -3,14 +3,19 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 
 
-const handleGetUser = async (email) => {
+const handleGetUser = async (event) => {
+    const { email } = JSON.parse(event.body);
+
     const params = {
         TableName: process.env.USERS_TABLE,
-        Key: { email },
+        FilterExpression: 'email = :email',
+        ExpressionAttributeValues: {
+            ':email': email
+        }
     };
     
     try {
-        const result = await dynamoDb.get(params).promise();
+        const result = await dynamoDb.scan(params).promise();
         console.log('User data:', result.Item);
         return result.Item;
 
@@ -26,12 +31,15 @@ const handleGetUsersAdmin = async (event) => {
     
     const params = {
         TableName: process.env.USERS_TABLE,
-        Key: { adminId },
+        FilterExpression: 'adminId = :adminId',
+        ExpressionAttributeValues: {
+            ':adminId': adminId
         }
+    };
     
 
     try {
-        const result = await dynamoDb.query(params).promise();
+        const result = await dynamoDb.scan(params).promise();
         return {
             statusCode: 200,
             body: JSON.stringify(result.Items)
