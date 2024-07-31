@@ -18,7 +18,7 @@ const handleGetUser = async (email) => {
     }
 };
 
-const handleGetUsersByAdminId = async (adminId) => {
+const handleGetUsersAdmin = async (adminId) => {
 
     const params = {
         TableName: process.env.USERS_TABLE,
