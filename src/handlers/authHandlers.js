@@ -59,6 +59,7 @@ const handleRegister = async (event) => {
     const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
     const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
     const createdAt = new Date().toISOString();
+    const role = 'admin';
 
     const params = {
         TableName: process.env.USERS_TABLE, // DynamoDB tablosu adı
@@ -68,7 +69,7 @@ const handleRegister = async (event) => {
             phone,
             password: hashedPassword, // Hashlenmiş parolayı kaydetme
             createdAt,
-            role:'admin',
+            role
         }
     };
 
@@ -111,6 +112,7 @@ const handleRegisterForUserRole = async (event) => {
     const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
     const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
     const createdAt = new Date().toISOString();
+    const role = 'user';
 
     const params = {
         TableName: process.env.USERS_TABLE, // DynamoDB tablosu adı
@@ -120,7 +122,7 @@ const handleRegisterForUserRole = async (event) => {
             phone,
             password: hashedPassword, // Hashlenmiş parolayı kaydetme
             createdAt,
-            role: 'user',
+            role,
             adminId
         }
     };
