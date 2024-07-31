@@ -66,7 +66,7 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
-            case '/getUser':
+            case '/getUsersByAdminId':
                 if (method === 'POST') {
                     responseMessage = await dbHandlers.handleGetUsersByAdminId(event);
                     statusCode = 200;
