@@ -19,7 +19,6 @@ const handleGetUser = async (event) => {
         
         return {
             statusCode: 200,
-            Headers: console.log('User data:', result.Item),
             body: JSON.stringify(result.Items)
         };
         
@@ -52,7 +51,6 @@ const handleGetUsersAdmin = async (event) => {
         
         return {
             statusCode: 200,
-            Headers: console.log('Users data:', result.Item),
             body: JSON.stringify(result.Items)
         };
     } catch (error) {
