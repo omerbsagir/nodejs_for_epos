@@ -20,8 +20,10 @@ const handleGetUser = async (email) => {
     }
 };
 
-const handleGetUsersAdmin = async (adminId) => {
+const handleGetUsersAdmin = async (event) => {
 
+    const { adminId } = JSON.parse(event.body);
+    
     const params = {
         TableName: process.env.USERS_TABLE,
         IndexName: 'adminId-index',
@@ -47,4 +49,4 @@ const handleGetUsersAdmin = async (adminId) => {
     }
 };
 
-module.exports = { handleGetUsersAdmin , handleGetUser};
+module.exports = {handleGetUsersAdmin , handleGetUser};
