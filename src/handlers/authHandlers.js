@@ -30,7 +30,7 @@ const handleLogin = async (event) => {
 
         // JWT oluşturma
         const token = jwt.sign(
-            { email: user.email, userId: user.userId },
+            { email: user.email, userId: user.userId , role: user.role },
             JWT_SECRET,
             { expiresIn: JWT_EXPIRES_IN }
         );
@@ -68,8 +68,7 @@ const handleRegister = async (event) => {
             phone,
             password: hashedPassword, // Hashlenmiş parolayı kaydetme
             createdAt,
-            role,
-            adminId
+            role:1,
         }
     };
 
@@ -106,10 +105,58 @@ const handleRegister = async (event) => {
     }
 };
 
+const handleRegisterForUserRole = async (event) => {
+    const { email, phone, password ,role,adminId} = JSON.parse(event.body);
 
+    const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
+    const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
+    const createdAt = new Date().toISOString();
 
+    const params = {
+        TableName: process.env.USERS_TABLE, // DynamoDB tablosu adı
+        Item: {
+            userId,
+            email,
+            phone,
+            password: hashedPassword, // Hashlenmiş parolayı kaydetme
+            createdAt,
+            role: 2,
+            adminId
+        }
+    };
 
+    try {
+        // Kullanıcıyı DynamoDB'ye ekleme
+        await dynamoDb.put(params).promise();
 
+        // Kullanıcıyı Cognito'ya ekleme
+        const cognitoParams = {
+            UserPoolId: process.env.COGNITO_USER_POOL_ID,
+            Username: email,
+            UserAttributes: [
+                { Name: 'email', Value: email },
+                { Name: 'phone_number', Value: phone } ,
+                { Name: 'custom-role', Value: role}
+            ],
+            MessageAction: 'SUPPRESS', // Do not send welcome email
+            TemporaryPassword: password // Geçici parola, kullanıcı ilk girişte değiştirmeli
+        };
+
+        await cognito.adminCreateUser(cognitoParams).promise();
+
+        return {
+            statusCode: 201,
+            body: JSON.stringify({ message: 'User Registration successful' })
+        };
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Could not register user', error: error.message })
+        };
+    }
+};
 
 const handleProtected = async (event) => {
     try {
@@ -123,17 +170,8 @@ const handleProtected = async (event) => {
             };
         }
 
-        // Token'ı doğrula
-        const decoded = jwt.verify(token, JWT_SECRET);
-
-        // JWT'nin geçerli olduğunu ve kullanıcıyı doğruladığını doğrula
-        if (!decoded || !decoded.email) {
-            return {
-                statusCode: 403,
-                body: JSON.stringify({ message: 'Invalid token' })
-            };
-        }
-
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
         // Kullanıcı rolünü kontrol et
         const userRole = decoded.role;
         if (userRole !== 'admin') {
@@ -142,12 +180,12 @@ const handleProtected = async (event) => {
                 body: JSON.stringify({ message: 'Access denied' })
             };
         }
-
         // Yetkili kullanıcıya erişim izni ver
         return {
             statusCode: 200,
             body: JSON.stringify({ message: 'Access granted', user: decoded })
         };
+        
     } catch (error) {
         console.error('Authorization error: ', error);
 
