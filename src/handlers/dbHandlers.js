@@ -45,4 +45,4 @@ const handleGetUsersAdmin = async (adminId) => {
     }
 };
 
-module.exports = { handleGetUsersByAdminId , handleGetUser};
+module.exports = { handleGetUsersAdmin , handleGetUser};

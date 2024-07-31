@@ -69,7 +69,7 @@ exports.handler = async (event) => {
                 break;
             case '/getUsersByAdminId':
                 if (method === 'POST') {
-                    responseMessage = await dbHandlers.handleGetUsersByAdminId(event);
+                    responseMessage = await dbHandlers.handleGetUsersAdmin(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
