@@ -16,12 +16,21 @@ const handleGetUser = async (event) => {
     
     try {
         const result = await dynamoDb.scan(params).promise();
-        console.log('User data:', result.Item);
-        return result.Item;
-
         
-    } catch (err) {
-        console.error('Error getting user:', err);
+        return {
+            statusCode: 200,
+            Headers: console.log('User data:', result.Item),
+            body: JSON.stringify(result.Items)
+        };
+        
+        
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Could not fetch user', error: error.message })
+        };
     }
 };
 
@@ -40,8 +49,10 @@ const handleGetUsersAdmin = async (event) => {
 
     try {
         const result = await dynamoDb.scan(params).promise();
+        
         return {
             statusCode: 200,
+            Headers: console.log('Users data:', result.Item),
             body: JSON.stringify(result.Items)
         };
     } catch (error) {
