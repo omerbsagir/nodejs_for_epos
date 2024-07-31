@@ -4,6 +4,7 @@ const userHandlers = require('./src/handlers/userHandlers');
 const activationHandlers = require('./src/handlers/activationHandlers');
 const walletHandlers = require('./src/handlers/walletHandlers');
 const nfcHandlers = require('./src/handlers/nfcHandlers');
+const dbHandlers = require('./src/handlers/dbHandlers');
 
 exports.handler = async (event) => {
     try {
