@@ -63,4 +63,38 @@ const handleGetUsersAdmin = async (event) => {
     }
 };
 
-module.exports = {handleGetUsersAdmin , handleGetUser};
+const checkActiveStatus = async (event) => {
+    const { companyId } = JSON.parse(event.body);
+
+    const params = {
+        TableName: 'YourTableName',
+        FilterExpression: '#companyId = :companyIdValue',
+        ExpressionAttributeNames: {
+            '#companyId': 'companyId',
+        },
+        ExpressionAttributeValues: {
+            ':isActiveValue': isActive,
+        },
+        ProjectionExpression: 'isActive', // Sadece companyId alanını seç
+        Limit: 1 // Sadece bir öğe döndür
+    };
+
+    try {
+        const result = await dynamoDb.scan(params).promise();
+        if (result.Items && result.Items.length > 0) {
+            const item = result.Items[0];
+            console.log('isActive:', item.isActive);
+        return item.isActive;
+        } else {
+            console.log('No items found');
+            return null;
+        }       
+    } catch (error) {
+        console.error('Error scanning DynamoDB:', error);
+        throw new Error('Error scanning DynamoDB');
+    }
+    
+
+};
+
+module.exports = {handleGetUsersAdmin , handleGetUser,checkActiveStatus};

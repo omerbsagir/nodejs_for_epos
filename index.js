@@ -147,7 +147,16 @@ exports.handler = async (event) => {
                     responseMessage = 'Method Not Allowed';
                     statusCode = 405;
                 }
-                break;    
+                break;
+            case '/checkActiveStatus':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.checkActiveStatus(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;           
             
             //wallet
 
