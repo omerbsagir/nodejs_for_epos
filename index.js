@@ -156,6 +156,15 @@ exports.handler = async (event) => {
                     responseMessage = 'Method Not Allowed';
                     statusCode = 405;
                 }
+                break;  
+            case '/createCompany':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.createCompany(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
                 break;           
             
             //wallet

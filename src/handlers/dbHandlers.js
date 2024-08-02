@@ -97,4 +97,41 @@ const checkActiveStatus = async (event) => {
 
 };
 
-module.exports = {handleGetUsersAdmin , handleGetUser,checkActiveStatus};
+const createCompany = async (event) => {
+    const { name , ownerId , iban } = JSON.parse(event.body);
+
+    const companyId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
+    const activationStatus = false;
+
+    const params = {
+        TableName: process.env.COMPANIES_TABLE, // DynamoDB tablosu adı
+        Item: {
+            companyId,
+            ownerId,
+            name,
+            iban,
+            activationStatus
+        }
+    };
+
+    try {
+        // Kullanıcıyı DynamoDB'ye ekleme
+        await dynamoDb.put(params).promise();
+
+        return {
+            statusCode: 202,
+            body: JSON.stringify({ message: 'Company registration successful' })
+        };
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Could not register company', error: error.message })
+        };
+    }
+
+}
+
+
+module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany };
