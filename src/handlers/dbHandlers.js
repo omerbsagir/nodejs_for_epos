@@ -113,7 +113,7 @@ const createCompany = async (event) => {
     };
 
     try {
-        const checkResult = await dynamoDb.query(checkParams).promise();
+        const checkResult = await dynamoDb.scan(checkParams).promise();
         if (checkResult.Items && checkResult.Items.length > 0) {
             console.log('Owner already has a company');
             return {
