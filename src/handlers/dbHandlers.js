@@ -106,7 +106,7 @@ const createCompany = async (event) => {
     // Önce ownerId'ye ait bir şirket olup olmadığını kontrol et
     const checkParams = {
         TableName: process.env.COMPANIES_TABLE,
-        KeyConditionExpression: 'ownerId = :ownerIdValue',
+        FilterExpression: 'ownerId = :ownerIdValue',
         ExpressionAttributeValues: {
             ':ownerIdValue': ownerId,
         },
