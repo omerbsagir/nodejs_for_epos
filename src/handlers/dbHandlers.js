@@ -132,6 +132,42 @@ const createCompany = async (event) => {
     }
 
 }
+const createActivation = async (event) => {
+    const { ownerId ,companyId, tcNo , vergiNo} = JSON.parse(event.body);
+
+    const id = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
+    const isActive = false;
+
+    const params = {
+        TableName: process.env.ACTIVATION_TABLE_TABLE, // DynamoDB tablosu adı
+        Item: {
+            id,
+            ownerId,
+            companyId,
+            tcNo,
+            vergiNo,
+            isActive
+        }
+    };
+
+    try {
+        // Kullanıcıyı DynamoDB'ye ekleme
+        await dynamoDb.put(params).promise();
+
+        return {
+            statusCode: 203,
+            body: JSON.stringify({ message: 'Activation added successfully' })
+        };
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Activation adding is not successfull', error: error.message })
+        };
+    }
+
+}
 
 
-module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany };
+module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation };

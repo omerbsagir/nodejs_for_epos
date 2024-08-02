@@ -130,9 +130,9 @@ exports.handler = async (event) => {
                 break;    
                 
             // activation
-            case '/activate':
-                if (method === 'GET') {
-                    responseMessage = await activationHandlersrHandlers.handleActivate(event);
+            case '/createActivation':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.createActivation(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
