@@ -98,40 +98,57 @@ const checkActiveStatus = async (event) => {
 };
 
 const createCompany = async (event) => {
-    const { name , ownerId , iban } = JSON.parse(event.body);
+    const { name, ownerId, iban } = JSON.parse(event.body);
 
-    const companyId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
+    const companyId = uuidv4(); // Benzersiz şirket ID'si oluşturma
     const activationStatus = false;
 
-    const params = {
-        TableName: process.env.COMPANIES_TABLE, // DynamoDB tablosu adı
-        Item: {
-            companyId,
-            ownerId,
-            name,
-            iban,
-            activationStatus
-        }
+    // Önce ownerId'ye ait bir şirket olup olmadığını kontrol et
+    const checkParams = {
+        TableName: process.env.COMPANIES_TABLE,
+        KeyConditionExpression: 'ownerId = :ownerIdValue',
+        ExpressionAttributeValues: {
+            ':ownerIdValue': ownerId,
+        },
     };
 
     try {
-        // Kullanıcıyı DynamoDB'ye ekleme
-        await dynamoDb.put(params).promise();
+        const checkResult = await dynamoDb.query(checkParams).promise();
+        if (checkResult.Items && checkResult.Items.length > 0) {
+            console.log('Owner already has a company');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Owner already has a company' }),
+            };
+        } else {
+            // Eğer ownerId'ye ait bir şirket yoksa, yeni şirket oluştur
+            const params = {
+                TableName: process.env.COMPANIES_TABLE,
+                Item: {
+                    companyId,
+                    ownerId,
+                    name,
+                    iban,
+                    activationStatus,
+                },
+            };
 
-        return {
-            statusCode: 202,
-            body: JSON.stringify({ message: 'Company registration successful' })
-        };
+            await dynamoDb.put(params).promise();
+
+            return {
+                statusCode: 202,
+                body: JSON.stringify({ message: 'Company registration successful' }),
+            };
+        }
     } catch (error) {
-        console.error("Error: ", error);
+        console.error('Error: ', error);
 
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Could not register company', error: error.message })
+            body: JSON.stringify({ message: 'Could not register company', error: error.message }),
         };
     }
-
-}
+};
 const createActivation = async (event) => {
     const { ownerId ,companyId, tcNo , vergiNo} = JSON.parse(event.body);
 
@@ -167,7 +184,7 @@ const createActivation = async (event) => {
         };
     }
 
-}
+};
 
 
 module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation };
