@@ -73,9 +73,9 @@ const checkActiveStatus = async (event) => {
             '#companyId': 'companyId',
         },
         ExpressionAttributeValues: {
-            ':isActiveValue': isActive,
+            ':companyIdValue': companyId,
         },
-        ProjectionExpression: 'isActive', // Sadece companyId alanını seç
+        ProjectionExpression: 'isActive', 
         Limit: 1 // Sadece bir öğe döndür
     };
 
