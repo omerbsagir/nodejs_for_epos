@@ -139,7 +139,7 @@ const createActivation = async (event) => {
     const isActive = false;
 
     const params = {
-        TableName: process.env.ACTIVATION_TABLE_TABLE, // DynamoDB tablosu adı
+        TableName: process.env.ACTIVATION_TABLE, // DynamoDB tablosu adı
         Item: {
             id,
             ownerId,
