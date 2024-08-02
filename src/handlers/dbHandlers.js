@@ -67,7 +67,7 @@ const checkActiveStatus = async (event) => {
     const { companyId } = JSON.parse(event.body);
 
     const params = {
-        TableName: 'YourTableName',
+        TableName: process.env.ACTIVATION_TABLE,
         FilterExpression: '#companyId = :companyIdValue',
         ExpressionAttributeNames: {
             '#companyId': 'companyId',
