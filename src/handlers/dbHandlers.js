@@ -86,7 +86,7 @@ const checkActiveStatus = async (event) => {
             console.log('isActive:', item.isActive);
         return item.isActive;
         } else {
-            console.log('No items found');
+            console.log('No items found , first you need to create activation!');
             return null;
         }       
     } catch (error) {
