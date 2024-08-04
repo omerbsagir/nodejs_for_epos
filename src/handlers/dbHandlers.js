@@ -75,7 +75,7 @@ const checkActiveStatus = async (event) => {
         ExpressionAttributeValues: {
             ':companyIdValue': companyId,
         },
-        ProjectionExpression: 'isActive', 
+        ProjectionExpression: 'isActive',
         Limit: 1 // Sadece bir öğe döndür
     };
 
@@ -84,18 +84,33 @@ const checkActiveStatus = async (event) => {
         if (result.Items && result.Items.length > 0) {
             const item = result.Items[0];
             console.log('isActive:', item.isActive);
-        return item.isActive;
+            return {
+                statusCode: 204,
+                body: JSON.stringify({
+                    isActive: item.isActive
+                })
+            };
         } else {
-            console.log('No items found , first you need to create activation!');
-            return null;
-        }       
+            console.log('No items found, first you need to create activation!');
+            return {
+                statusCode: 404,
+                body: JSON.stringify({
+                    message: 'No items found, first you need to create activation!'
+                })
+            };
+        }
     } catch (error) {
         console.error('Error scanning DynamoDB:', error);
-        throw new Error('Error scanning DynamoDB');
+        return {
+            statusCode: 500,
+            body: JSON.stringify({
+                message: 'Error scanning DynamoDB',
+                error: error.message
+            })
+        };
     }
-    
-
 };
+
 
 const createCompany = async (event) => {
     const { name, ownerId, iban } = JSON.parse(event.body);
