@@ -76,6 +76,15 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
+            case '/getCompany':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.handleGetCompany(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;
             //nfc
 
             case '/verify':

@@ -32,6 +32,35 @@ const handleGetUser = async (event) => {
         };
     }
 };
+const handleGetCompany = async (event) => {
+    const { ownerId } = JSON.parse(event.body);
+
+    const params = {
+        TableName: process.env.COMPANIES_TABLE,
+        FilterExpression: 'ownerId = :ownerId',
+        ExpressionAttributeValues: {
+            ':ownerId': ownerId
+        }
+    };
+    
+    try {
+        const result = await dynamoDb.scan(params).promise();
+        
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result.Items)
+        };
+        
+        
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Could not fetch company', error: error.message })
+        };
+    }
+};
 
 const handleGetUsersAdmin = async (event) => {
 
@@ -202,4 +231,4 @@ const createActivation = async (event) => {
 };
 
 
-module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation };
+module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany};
