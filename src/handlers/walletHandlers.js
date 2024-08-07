@@ -7,7 +7,7 @@ const handleUpdateWallet = async (event) => {
     const { walletId } = JSON.parse(event.body);
 
     const params = {
-        TableName: process.env.TRANSACTION_TABLE,
+        TableName: process.env.TRANSACTIONS_TABLE,
         FilterExpression: '#walletId = :walletIdValue',
         ExpressionAttributeNames: {
             '#walletId': 'walletId',
