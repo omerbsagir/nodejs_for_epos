@@ -16,33 +16,42 @@ const handleUpdateWallet = async (event) => {
             ':walletIdValue': walletId,
         },
         ProjectionExpression: 'amount',
-        
     };
 
-    const params2 = {
-        TableName: process.env.WALLETS_TABLE,
-        Key: {
-            walletId: walletId // Güncellenecek öğenin birincil anahtarı
-        },
-        UpdateExpression: 'set amount = :amount', // Güncellenmek istenen alan
-        ExpressionAttributeValues: {
-            ':amount': toplam // Yeni değer
-        },
-        ReturnValues: 'UPDATED_NEW' // Güncellenen değerlerin döndürülmesini sağlar
-    };
-    
-
+    // `toplam` değişkenini tanımlama
     let toplam = 0;
 
+    // `params2` tanımından önce `toplam` hesaplamasını yapmalısınız
     try {
+        // İşlemleri al
         const result = await dynamoDb.scan(params).promise();
         
-
         if (result.Items && result.Items.length > 0) {
+            // Amount toplamını hesapla
             result.Items.forEach(item => {
-                toplam+=item;
+                toplam += item.amount; // `item.amount` ile `amount` özelliğini referans al
             });
-    
+
+            // Cüzdanı güncelle
+            const params2 = {
+                TableName: process.env.WALLETS_TABLE,
+                Key: {
+                    walletId: walletId // Güncellenecek öğenin birincil anahtarı
+                },
+                UpdateExpression: 'set amount = :amount', // Güncellenmek istenen alan
+                ExpressionAttributeValues: {
+                    ':amount': toplam // Yeni değer
+                },
+                ReturnValues: 'UPDATED_NEW' // Güncellenen değerlerin döndürülmesini sağlar
+            };
+
+            // Güncelleme işlemi
+            const result2 = await dynamoDb.update(params2).promise();
+            console.log('Update successful:', result2);
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Update successful', result: result2 }),
+            };
         } else {
             console.log('No items found, first you need to create transaction!');
             return {
@@ -52,29 +61,6 @@ const handleUpdateWallet = async (event) => {
                 })
             };
         }
-
-        const result2 = await dynamoDb.scan(params2).promise();
-        
-        if (result2.Items && result2.Items.length > 0) {
-            try {
-                const result3 = await dynamoDb.update(params2).promise();
-                console.log('Update successful:', result3);
-                return result3;
-            } catch (e2) {
-                console.error('Update error:', e2);
-                throw new Error('Update failed');
-            }
-    
-        } else {
-            console.log('No items found, first you need to create transaction!');
-            return {
-                statusCode: 404,
-                body: JSON.stringify({
-                    message: 'No items found, first you need to create transaction!'
-                })
-            };
-        }
-
 
     } catch (error) {
         console.error('Error scanning DynamoDB:', error);
@@ -87,6 +73,7 @@ const handleUpdateWallet = async (event) => {
         };
     }
 };
+
 
 const createWallet = async (event) => {
     const { ownerId, companyId, iban } = JSON.parse(event.body);
