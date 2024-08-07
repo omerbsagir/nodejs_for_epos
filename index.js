@@ -55,6 +55,15 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;    
+            case '/validateToken':
+                if (method === 'POST') {
+                    responseMessage = await authHandlers.handleValidateToken(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;        
             
             //calisanlar
     

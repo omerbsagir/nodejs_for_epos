@@ -198,5 +198,29 @@ const handleProtected = async (event) => {
     }
 };
 
+const handleValidateToken = async (event) => {
+    const { token } = JSON.parse(event.body);
 
-module.exports = { handleLogin ,handleRegister ,handleRegisterForUserRole, handleProtected};
+    try {
+        if (!token) {
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Token is required' })
+            };
+        }
+
+        const decoded = jwt.verify(token, JWT_SECRET);
+
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: 'Token is valid', decoded })
+        };
+    } catch (error) {
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ message: 'Invalid token', error: error.message })
+        };
+    }
+};
+
+module.exports = { handleLogin ,handleRegister ,handleRegisterForUserRole, handleProtected,handleValidateToken};
