@@ -119,27 +119,9 @@ exports.handler = async (event) => {
 
             //payment
 
-            case '/charge':
-                if (method === 'GET') {
-                    responseMessage = await paymentHandlersHandlers.handleCharge(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;    
-                case '/refund':
-                    if (method === 'GET') {
-                        responseMessage = await paymentHandlersHandlers.handleRefund(event);
-                        statusCode = 200;
-                    } else {
-                        responseMessage = 'Method Not Allowed';
-                        statusCode = 405;
-                    }
-                    break;
-                case '/transaction-id':
-                if (method === 'GET') {
-                    responseMessage = await paymentHandlersHandlers.returnTransactionId(event);
+            case '/createTransaction':
+                if (method === 'POST') {
+                    responseMessage = await paymentHandlers.handleCreateTransaction(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
@@ -187,9 +169,18 @@ exports.handler = async (event) => {
             
             //wallet
 
-            case '/update-wallet':
-                if (method === 'GET') {
+            case '/updateWallet':
+                if (method === 'POST') {
                     responseMessage = await walletHandlers.handleUpdateWallet(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;     
+            case '/createWallet':
+                if (method === 'POST') {
+                    responseMessage = await walletHandlers.createWallet(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
