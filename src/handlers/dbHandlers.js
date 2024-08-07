@@ -107,7 +107,7 @@ const checkActiveStatus = async (event) => {
         ProjectionExpression: 'isActive',
         Limit: 1 // Sadece bir öğe döndür
     };
-
+    
     try {
         const result = await dynamoDb.scan(params).promise();
         if (result.Items && result.Items.length > 0) {
@@ -128,6 +128,8 @@ const checkActiveStatus = async (event) => {
                 })
             };
         }
+
+        
     } catch (error) {
         console.error('Error scanning DynamoDB:', error);
         return {
