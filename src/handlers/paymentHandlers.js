@@ -4,9 +4,9 @@ const { v4: uuidv4 } = require('uuid');
 
 
 const handleCreateTransaction = async (event) => {
-    const { ownerId ,companyId, tcNo , vergiNo} = JSON.parse(event.body);
+    const { walletId ,cardNumber, expiryDate , cardName,amount} = JSON.parse(event.body);
 
-    const id = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
+    const transactionId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
 
     const params = {
         TableName: process.env.TRANSACTIONS_TABLE, // DynamoDB tablosu adı
