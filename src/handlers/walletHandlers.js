@@ -29,7 +29,7 @@ const handleUpdateWallet = async (event) => {
         if (result.Items && result.Items.length > 0) {
             // Amount toplamını hesapla
             result.Items.forEach(item => {
-                toplam += item.amount; // `item.amount` ile `amount` özelliğini referans al
+                toplam += parseFloat(item.amount); // `item.amount` ile `amount` özelliğini referans al
             });
 
             // Cüzdanı güncelle
