@@ -18,34 +18,34 @@ const handleUpdateWallet = async (event) => {
         ProjectionExpression: 'amount',
     };
 
-    // `toplam` değişkenini tanımlama
+    
     let toplam = 0;
 
-    // `params2` tanımından önce `toplam` hesaplamasını yapmalısınız
+    
     try {
-        // İşlemleri al
+        
         const result = await dynamoDb.scan(params).promise();
         
         if (result.Items && result.Items.length > 0) {
-            // Amount toplamını hesapla
+            
             result.Items.forEach(item => {
-                toplam += parseFloat(item.amount); // `item.amount` ile `amount` özelliğini referans al
+                toplam += parseFloat(item.amount); 
             });
 
-            // Cüzdanı güncelle
+            
             const params2 = {
                 TableName: process.env.WALLETS_TABLE,
                 Key: {
-                    walletId: walletId // Güncellenecek öğenin birincil anahtarı
+                    walletId: walletId 
                 },
-                UpdateExpression: 'set amount = :amount', // Güncellenmek istenen alan
+                UpdateExpression: 'set amount = :amount', 
                 ExpressionAttributeValues: {
-                    ':amount': toplam // Yeni değer
+                    ':amount': toplam 
                 },
-                ReturnValues: 'UPDATED_NEW' // Güncellenen değerlerin döndürülmesini sağlar
+                ReturnValues: 'UPDATED_NEW' 
             };
 
-            // Güncelleme işlemi
+           
             const result2 = await dynamoDb.update(params2).promise();
             console.log('Update successful:', result2);
             return {
@@ -77,10 +77,10 @@ const handleUpdateWallet = async (event) => {
 
 const createWallet = async (event) => {
     const { ownerId, companyId, iban } = JSON.parse(event.body);
-    const walletId = uuidv4(); // Benzersiz cüzdan ID'si oluşturma
+    const walletId = uuidv4(); 
     let amount = 0;
 
-    // Önce ownerId'ye ait bir şirket olup olmadığını kontrol et
+ 
     const checkParams = {
         TableName: process.env.COMPANIES_TABLE,
         FilterExpression: 'ownerId = :ownerIdValue',
@@ -101,7 +101,7 @@ const createWallet = async (event) => {
         const checkResult2 = await dynamoDb.scan(checkParams2).promise();
 
         if (checkResult.Items && checkResult.Items.length > 0 && checkResult2.Items.length == 0) {
-            // Owner ID'ye ait bir şirket bulunduysa cüzdanı oluştur
+            
             const params = {
                 TableName: process.env.WALLETS_TABLE,
                 Item: {

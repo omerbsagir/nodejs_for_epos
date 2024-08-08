@@ -134,7 +134,7 @@ const checkActiveStatus = async (event) => {
             ':companyIdValue': companyId,
         },
         ProjectionExpression: 'isActive',
-        Limit: 1 // Sadece bir öğe döndür
+        Limit: 1 
     };
     
     try {
@@ -175,10 +175,10 @@ const checkActiveStatus = async (event) => {
 const createCompany = async (event) => {
     const { name, ownerId, iban } = JSON.parse(event.body);
 
-    const companyId = uuidv4(); // Benzersiz şirket ID'si oluşturma
+    const companyId = uuidv4(); 
     const activationStatus = false;
 
-    // Önce ownerId'ye ait bir şirket olup olmadığını kontrol et
+    
     const checkParams = {
         TableName: process.env.COMPANIES_TABLE,
         FilterExpression: 'ownerId = :ownerIdValue',
@@ -196,7 +196,7 @@ const createCompany = async (event) => {
                 body: JSON.stringify({ message: 'Owner already has a company' }),
             };
         } else {
-            // Eğer ownerId'ye ait bir şirket yoksa, yeni şirket oluştur
+            
             const params = {
                 TableName: process.env.COMPANIES_TABLE,
                 Item: {
@@ -227,11 +227,11 @@ const createCompany = async (event) => {
 const createActivation = async (event) => {
     const { ownerId ,companyId, tcNo , vergiNo} = JSON.parse(event.body);
 
-    const id = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
+    const id = uuidv4(); 
     const isActive = false;
 
     const params = {
-        TableName: process.env.ACTIVATION_TABLE, // DynamoDB tablosu adı
+        TableName: process.env.ACTIVATION_TABLE, 
         Item: {
             id,
             ownerId,
@@ -243,7 +243,7 @@ const createActivation = async (event) => {
     };
 
     try {
-        // Kullanıcıyı DynamoDB'ye ekleme
+        
         await dynamoDb.put(params).promise();
 
         return {

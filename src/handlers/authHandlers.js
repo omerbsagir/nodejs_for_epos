@@ -28,7 +28,7 @@ const handleLogin = async (event) => {
             };
         }
 
-        // JWT oluşturma
+        
         const token = jwt.sign(
             { email: user.email, userId: user.userId , role: user.role },
             JWT_SECRET,
@@ -56,28 +56,28 @@ const handleLogin = async (event) => {
 const handleRegister = async (event) => {
     const { email, phone, password } = JSON.parse(event.body);
 
-    const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
-    const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
+    const userId = uuidv4(); 
+    const hashedPassword = await bcrypt.hash(password, 10); 
     const createdAt = new Date().toISOString();
     const role = 'admin';
 
     const params = {
-        TableName: process.env.USERS_TABLE, // DynamoDB tablosu adı
+        TableName: process.env.USERS_TABLE, 
         Item: {
             userId,
             email,
             phone,
-            password: hashedPassword, // Hashlenmiş parolayı kaydetme
+            password: hashedPassword,
             createdAt,
             role
         }
     };
 
     try {
-        // Kullanıcıyı DynamoDB'ye ekleme
+        
         await dynamoDb.put(params).promise();
 
-        // Kullanıcıyı Cognito'ya ekleme
+        
         const cognitoParams = {
             UserPoolId: process.env.COGNITO_USER_POOL_ID,
             Username: email,
@@ -86,8 +86,8 @@ const handleRegister = async (event) => {
                 { Name: 'phone_number', Value: phone } ,
                 { Name: 'custom:role', Value: role}
             ],
-            MessageAction: 'SUPPRESS', // Do not send welcome email
-            TemporaryPassword: password // Geçici parola, kullanıcı ilk girişte değiştirmeli
+            MessageAction: 'SUPPRESS', 
+            TemporaryPassword: password 
         };
 
         await cognito.adminCreateUser(cognitoParams).promise();
@@ -109,18 +109,18 @@ const handleRegister = async (event) => {
 const handleRegisterForUserRole = async (event) => {
     const { email, phone, password,adminId } = JSON.parse(event.body);
 
-    const userId = uuidv4(); // Benzersiz kullanıcı ID'si oluşturma
-    const hashedPassword = await bcrypt.hash(password, 10); // Parolayı hashleme
+    const userId = uuidv4(); 
+    const hashedPassword = await bcrypt.hash(password, 10); 
     const createdAt = new Date().toISOString();
     const role = 'user';
 
     const params = {
-        TableName: process.env.USERS_TABLE, // DynamoDB tablosu adı
+        TableName: process.env.USERS_TABLE,
         Item: {
             userId,
             email,
             phone,
-            password: hashedPassword, // Hashlenmiş parolayı kaydetme
+            password: hashedPassword, 
             createdAt,
             role,
             adminId
@@ -128,10 +128,10 @@ const handleRegisterForUserRole = async (event) => {
     };
 
     try {
-        // Kullanıcıyı DynamoDB'ye ekleme
+        
         await dynamoDb.put(params).promise();
 
-        // Kullanıcıyı Cognito'ya ekleme
+        
         const cognitoParams = {
             UserPoolId: process.env.COGNITO_USER_POOL_ID,
             Username: email,
@@ -140,8 +140,8 @@ const handleRegisterForUserRole = async (event) => {
                 { Name: 'phone_number', Value: phone } ,
                 { Name: 'custom:role', Value: role}
             ],
-            MessageAction: 'SUPPRESS', // Do not send welcome email
-            TemporaryPassword: password // Geçici parola, kullanıcı ilk girişte değiştirmeli
+            MessageAction: 'SUPPRESS', 
+            TemporaryPassword: password 
         };
 
         await cognito.adminCreateUser(cognitoParams).promise();
@@ -162,7 +162,7 @@ const handleRegisterForUserRole = async (event) => {
 
 const handleProtected = async (event) => {
     try {
-        // Authorization header'ından token'ı al
+        
         const token = event.headers.Authorization || event.headers.authorization;
 
         if (!token) {
@@ -174,7 +174,7 @@ const handleProtected = async (event) => {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
     
-        // Kullanıcı rolünü kontrol et
+        
         const userRole = decoded.role;
         if (userRole !== 'admin') {
             return {
@@ -182,7 +182,7 @@ const handleProtected = async (event) => {
                 body: JSON.stringify({ message: 'Access denied' })
             };
         }
-        // Yetkili kullanıcıya erişim izni ver
+        
         return {
             statusCode: 200,
             body: JSON.stringify({ message: 'Access granted', user: decoded })

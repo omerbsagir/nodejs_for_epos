@@ -8,8 +8,8 @@ const dbHandlers = require('./src/handlers/dbHandlers');
 
 exports.handler = async (event) => {
     try {
-        const path = event.resource; // API Gateway'den gelen yol bilgisi
-        const method = event.httpMethod; // API Gateway'den gelen HTTP metodu
+        const path = event.resource; 
+        const method = event.httpMethod; 
 
         let responseMessage;
         let statusCode;
