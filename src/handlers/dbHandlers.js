@@ -90,6 +90,35 @@ const handleGetWallet = async (event) => {
         };
     }
 };
+const handleGetActivation = async (event) => {
+    const { companyId } = JSON.parse(event.body);
+
+    const params = {
+        TableName: process.env.ACTIVATION_TABLE,
+        FilterExpression: 'companyId = :companyId',
+        ExpressionAttributeValues: {
+            ':companyId': companyId
+        }
+    };
+    
+    try {
+        const result = await dynamoDb.scan(params).promise();
+        
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result.Items)
+        };
+        
+        
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Could not fetch activation docs', error: error.message })
+        };
+    }
+};
 
 const handleGetUsersAdmin = async (event) => {
 
@@ -262,4 +291,4 @@ const createActivation = async (event) => {
 };
 
 
-module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet};
+module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation};
