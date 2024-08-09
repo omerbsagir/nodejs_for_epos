@@ -4,13 +4,13 @@ const { v4: uuidv4 } = require('uuid');
 
 
 const handleGetUser = async (event) => {
-    const { email } = JSON.parse(event.body);
+    const { userId } = JSON.parse(event.body);
 
     const params = {
         TableName: process.env.USERS_TABLE,
-        FilterExpression: 'email = :email',
+        FilterExpression: 'userId = :userId',
         ExpressionAttributeValues: {
-            ':email': email
+            ':userId': userId
         }
     };
     
