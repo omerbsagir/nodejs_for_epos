@@ -1,7 +1,7 @@
 const authHandlers = require('./src/handlers/authHandlers');
 const paymentHandlers = require('./src/handlers/paymentHandlers');
-const userHandlers = require('./src/handlers/userHandlers');
-const activationHandlers = require('./src/handlers/activationHandlers');
+//const userHandlers = require('./src/handlers/userHandlers');
+//const activationHandlers = require('./src/handlers/activationHandlers');
 const walletHandlers = require('./src/handlers/walletHandlers');
 const nfcHandlers = require('./src/handlers/nfcHandlers');
 const dbHandlers = require('./src/handlers/dbHandlers');
@@ -46,15 +46,7 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
-            case '/protected':
-                if (method === 'POST') {
-                    responseMessage = await authHandlers.handleProtected(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;    
+        
             case '/validateToken':
                 if (method === 'POST') {
                     responseMessage = await authHandlers.handleValidateToken(event);
