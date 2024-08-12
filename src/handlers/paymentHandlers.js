@@ -4,18 +4,18 @@ const { v4: uuidv4 } = require('uuid');
 
 
 const handleCreateTransaction = async (event) => {
-    const { walletId ,cardNumber, expiryDate , cardName,amount} = JSON.parse(event.body);
+    const { walletId , amount} = JSON.parse(event.body);
 
     const transactionId = uuidv4(); 
+    const dateSaatsiz = new Date();
+    const date = date.toLocaleString();
 
     const params = {
         TableName: process.env.TRANSACTIONS_TABLE, 
         Item: {
             transactionId,
             walletId,
-            cardNumber,
-            expiryDate,
-            cardName,
+            date,
             amount
         }
     };
