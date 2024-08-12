@@ -75,8 +75,6 @@ const handleRegister = async (event) => {
 
     try {
         
-        await dynamoDb.put(params).promise();
-
         
         const cognitoParams = {
             UserPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -91,6 +89,8 @@ const handleRegister = async (event) => {
         };
 
         await cognito.adminCreateUser(cognitoParams).promise();
+        await dynamoDb.put(params).promise();
+
 
         return {
             statusCode: 201,
@@ -129,8 +129,6 @@ const handleRegisterForUserRole = async (event) => {
 
     try {
         
-        await dynamoDb.put(params).promise();
-
         
         const cognitoParams = {
             UserPoolId: process.env.COGNITO_USER_POOL_ID,
@@ -145,6 +143,7 @@ const handleRegisterForUserRole = async (event) => {
         };
 
         await cognito.adminCreateUser(cognitoParams).promise();
+        await dynamoDb.put(params).promise();
 
         return {
             statusCode: 201,
