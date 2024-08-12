@@ -8,7 +8,7 @@ const handleCreateTransaction = async (event) => {
 
     const transactionId = uuidv4(); 
     const dateSaatsiz = new Date();
-    const date = date.toLocaleString();
+    const date = dateSaatsiz.toLocaleString();
 
     const params = {
         TableName: process.env.TRANSACTIONS_TABLE, 
