@@ -259,26 +259,45 @@ const createActivation = async (event) => {
     const id = uuidv4(); 
     const isActive = false;
 
-    const params = {
-        TableName: process.env.ACTIVATION_TABLE, 
-        Item: {
-            id,
-            ownerId,
-            companyId,
-            tcNo,
-            vergiNo,
-            isActive
-        }
+    const checkParams = {
+        TableName: process.env.ACTIVATION_TABLE,
+        FilterExpression: 'companyId = :companyIdValue',
+        ExpressionAttributeValues: {
+            ':companyIdValue': companyId,
+        },
     };
 
+    
     try {
         
-        await dynamoDb.put(params).promise();
+        const checkResult = await dynamoDb.scan(checkParams).promise();
+        if (checkResult.Items && checkResult.Items.length > 0) {
+            console.log('Company already has a activation request');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Company already has a activation request' }),
+            };
+        }else{
+            const params = {
+                TableName: process.env.ACTIVATION_TABLE, 
+                Item: {
+                    id,
+                    ownerId,
+                    companyId,
+                    tcNo,
+                    vergiNo,
+                    isActive
+                }
+            };
+            await dynamoDb.put(params).promise();
 
-        return {
-            statusCode: 203,
-            body: JSON.stringify({ message: 'Activation added successfully' })
-        };
+            return {
+                statusCode: 203,
+                body: JSON.stringify({ message: 'Activation added successfully' }),
+            };
+
+        }
+
     } catch (error) {
         console.error("Error: ", error);
 
