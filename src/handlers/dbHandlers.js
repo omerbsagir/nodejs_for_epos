@@ -416,5 +416,56 @@ const deleteCompany = async (event) => {
         };
     }
 };
+const deleteUser = async (event) => {
+    const { userId } = JSON.parse(event.body);
 
-module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation,deleteActivation,deleteCompany};
+    const checkParams = {
+        TableName: process.env.USERS_TABLE,
+        FilterExpression: '#userId = :userIdValue',
+        ExpressionAttributeValues: {
+            ':userIdValue': userId,
+        },
+        
+    };
+
+    try {
+        const checkResult = await dynamoDb.scan(checkParams).promise();
+        
+        if (checkResult.Items && checkResult.Items.length > 0) {
+            // Assuming there might be multiple items and you want to delete all of them
+            const deletePromises = checkResult.Items.map(async (item) => {
+                const deleteParams = {
+                    TableName: process.env.USERS_TABLE,
+                    Key: {
+                        userId: item.userId,  // Use item.id from the scan result
+                    },
+                };
+
+                await dynamoDb.delete(deleteParams).promise();
+            });
+
+            await Promise.all(deletePromises);
+
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Kullanıcı başarıyla silindi!' }),
+            };
+        } else {
+            console.log('Bir Kullanıcı Bulunamadı');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Bir Kullanıcı Bulunamadı' }),
+            };
+        }
+
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Kullanıcı silinemedi!', error: error.message }),
+        };
+    }
+};
+
+module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation,deleteActivation,deleteCompany,deleteUser};

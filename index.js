@@ -121,6 +121,15 @@ exports.handler = async (event) => {
                     responseMessage = 'Method Not Allowed';
                     statusCode = 405;
                 }
+                break; 
+            case '/deleteUser':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.deleteUser(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
                 break;  
             //nfc
 
