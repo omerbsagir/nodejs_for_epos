@@ -38,8 +38,36 @@ const handleCreateTransaction = async (event) => {
     }
 
 };
+const handleGetTransactions = async (event) => {
+    const { walletId } = JSON.parse(event.body);
+
+    const params = {
+        TableName: process.env.TRANSACTIONS_TABLE_TABLE,
+        FilterExpression: 'walletId = :walletId',
+        ExpressionAttributeValues: {
+            ':walletId': companyId
+        }
+    };
+    
+    try {
+        const result = await dynamoDb.scan(params).promise();
+        
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result.Items)
+        };
+        
+        
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Could not fetch transactions', error: error.message })
+        };
+    }
+};
 
 
 
-
-module.exports = { handleCreateTransaction };
+module.exports = { handleCreateTransaction , handleGetTransactions };
