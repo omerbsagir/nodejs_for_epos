@@ -419,6 +419,7 @@ const deleteCompany = async (event) => {
 const deleteUser = async (event) => {
     const { email } = JSON.parse(event.body);
 
+    // Define parameters for DynamoDB
     const checkParams = {
         TableName: process.env.USERS_TABLE,
         FilterExpression: '#email = :emailValue',
@@ -432,10 +433,11 @@ const deleteUser = async (event) => {
     };
 
     try {
+        // Scan DynamoDB table to find users
         const checkResult = await dynamoDb.scan(checkParams).promise();
         
         if (checkResult.Items && checkResult.Items.length > 0) {
-            // Assuming there might be multiple items and you want to delete all of them
+            // Delete users from DynamoDB
             const deletePromises = checkResult.Items.map(async (item) => {
                 const deleteParams = {
                     TableName: process.env.USERS_TABLE,
@@ -448,6 +450,22 @@ const deleteUser = async (event) => {
             });
 
             await Promise.all(deletePromises);
+
+            // Delete user from Cognito
+            try {
+                const cognitoParams = {
+                    UserPoolId: process.env.COGNITO_USER_POOL_ID, // Your Cognito User Pool ID
+                    Username: email, // Cognito Username
+                };
+
+                await cognito.adminDeleteUser(cognitoParams).promise();
+            } catch (cognitoError) {
+                console.error("Cognito Error: ", cognitoError);
+                return {
+                    statusCode: 500,
+                    body: JSON.stringify({ message: 'Kullanıcı Cognito\'dan silinemedi!', error: cognitoError.message }),
+                };
+            }
 
             return {
                 statusCode: 200,
