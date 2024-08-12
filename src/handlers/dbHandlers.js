@@ -422,10 +422,13 @@ const deleteUser = async (event) => {
     const checkParams = {
         TableName: process.env.USERS_TABLE,
         FilterExpression: '#email = :emailValue',
+        ExpressionAttributeNames: {
+            '#email': 'email', // Define the email attribute
+        },
         ExpressionAttributeValues: {
             ':emailValue': email,
         },
-        
+        ProjectionExpression: '#email', // Only retrieve the email attribute
     };
 
     try {
@@ -437,7 +440,7 @@ const deleteUser = async (event) => {
                 const deleteParams = {
                     TableName: process.env.USERS_TABLE,
                     Key: {
-                        email: item.email,  // Use item.id from the scan result
+                        email: item.email,  // Use the primary key from the scan result
                     },
                 };
 
@@ -467,5 +470,6 @@ const deleteUser = async (event) => {
         };
     }
 };
+
 
 module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation,deleteActivation,deleteCompany,deleteUser};
