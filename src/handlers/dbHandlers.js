@@ -417,13 +417,13 @@ const deleteCompany = async (event) => {
     }
 };
 const deleteUser = async (event) => {
-    const { userId } = JSON.parse(event.body);
+    const { email } = JSON.parse(event.body);
 
     const checkParams = {
         TableName: process.env.USERS_TABLE,
-        FilterExpression: '#userId = :userIdValue',
+        FilterExpression: '#email = :emailValue',
         ExpressionAttributeValues: {
-            ':userIdValue': userId,
+            ':emailValue': email,
         },
         
     };
@@ -437,7 +437,7 @@ const deleteUser = async (event) => {
                 const deleteParams = {
                     TableName: process.env.USERS_TABLE,
                     Key: {
-                        userId: item.userId,  // Use item.id from the scan result
+                        email: item.email,  // Use item.id from the scan result
                     },
                 };
 
