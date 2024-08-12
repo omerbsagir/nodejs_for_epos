@@ -45,7 +45,7 @@ const handleGetTransactions = async (event) => {
         TableName: process.env.TRANSACTIONS_TABLE_TABLE,
         FilterExpression: 'walletId = :walletId',
         ExpressionAttributeValues: {
-            ':walletId': companyId
+            ':walletId': walletId
         }
     };
     
