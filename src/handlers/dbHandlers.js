@@ -362,5 +362,59 @@ const deleteActivation = async (event) => {
         };
     }
 };
+const deleteCompany = async (event) => {
+    const { ownerId } = JSON.parse(event.body);
 
-module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation,deleteActivation};
+    const checkParams = {
+        TableName: process.env.COMPANIES_TABLE,
+        FilterExpression: '#ownerId = :ownerIdValue',
+        ExpressionAttributeNames: {
+            '#ownerId': 'ownerId',
+        },
+        ExpressionAttributeValues: {
+            ':ownerIdValue': ownerId,
+        },
+        ProjectionExpression: 'companyId',  // Use ProjectionExpression to retrieve the 'id'
+    };
+
+    try {
+        const checkResult = await dynamoDb.scan(checkParams).promise();
+        
+        if (checkResult.Items && checkResult.Items.length > 0) {
+            // Assuming there might be multiple items and you want to delete all of them
+            const deletePromises = checkResult.Items.map(async (item) => {
+                const deleteParams = {
+                    TableName: process.env.COMPANIES_TABLE,
+                    Key: {
+                        companyId: item.companyId,  // Use item.id from the scan result
+                    },
+                };
+
+                await dynamoDb.delete(deleteParams).promise();
+            });
+
+            await Promise.all(deletePromises);
+
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Şirket başarıyla silindi!' }),
+            };
+        } else {
+            console.log('Bir Şirket Bulunmuyor');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Bir Şirket Bulunmuyor' }),
+            };
+        }
+
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Şirket silinemedi!', error: error.message }),
+        };
+    }
+};
+
+module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation,deleteActivation,deleteCompany};

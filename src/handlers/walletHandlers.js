@@ -135,5 +135,59 @@ const createWallet = async (event) => {
     }
 };
 
+const deleteWallet = async (event) => {
+    const { ownerId } = JSON.parse(event.body);
 
-module.exports = { handleUpdateWallet , createWallet};
+    const checkParams = {
+        TableName: process.env.WALLETS_TABLE,
+        FilterExpression: '#ownerId = :ownerIdValue',
+        ExpressionAttributeNames: {
+            '#ownerId': 'ownerId',
+        },
+        ExpressionAttributeValues: {
+            ':ownerIdValue': ownerId,
+        },
+        ProjectionExpression: 'walletId',  // Use ProjectionExpression to retrieve the 'id'
+    };
+
+    try {
+        const checkResult = await dynamoDb.scan(checkParams).promise();
+        
+        if (checkResult.Items && checkResult.Items.length > 0) {
+            // Assuming there might be multiple items and you want to delete all of them
+            const deletePromises = checkResult.Items.map(async (item) => {
+                const deleteParams = {
+                    TableName: process.env.WALLETS_TABLE,
+                    Key: {
+                        walletId: item.walletId,  // Use item.id from the scan result
+                    },
+                };
+
+                await dynamoDb.delete(deleteParams).promise();
+            });
+
+            await Promise.all(deletePromises);
+
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Cüzdan başarıyla silindi!' }),
+            };
+        } else {
+            console.log('Bir Şirket Bulunmuyor');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Bir Cüzdan Bulunmuyor' }),
+            };
+        }
+
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Cüzdan silinemedi!', error: error.message }),
+        };
+    }
+};
+
+module.exports = { handleUpdateWallet , createWallet , deleteWallet};

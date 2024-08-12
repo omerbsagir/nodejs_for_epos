@@ -112,7 +112,16 @@ exports.handler = async (event) => {
                     responseMessage = 'Method Not Allowed';
                     statusCode = 405;
                 }
-                break;        
+                break;      
+            case '/deleteCompany':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.deleteCompany(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;  
             //nfc
 
             case '/verify':
@@ -147,9 +156,9 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;   
-            case '/getTransaction':
+            case '/getTransactions':
                 if (method === 'POST') {
-                    responseMessage = await paymentHandlers.handleGetTransaction(event);
+                    responseMessage = await paymentHandlers.handleGetTransactions(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
@@ -209,6 +218,15 @@ exports.handler = async (event) => {
             case '/createWallet':
                 if (method === 'POST') {
                     responseMessage = await walletHandlers.createWallet(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;  
+            case '/deleteWallet':
+                if (method === 'POST') {
+                    responseMessage = await walletHandlers.deleteWallet(event);
                     statusCode = 200;
                 } else {
                     responseMessage = 'Method Not Allowed';
