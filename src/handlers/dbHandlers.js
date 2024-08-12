@@ -1,7 +1,7 @@
 const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const { v4: uuidv4 } = require('uuid');
-
+const cognito = new AWS.CognitoIdentityServiceProvider();
 
 const handleGetUser = async (event) => {
     const { userId } = JSON.parse(event.body);
