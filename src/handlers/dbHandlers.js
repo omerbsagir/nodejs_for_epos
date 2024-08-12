@@ -308,6 +308,59 @@ const createActivation = async (event) => {
     }
 
 };
+const deleteActivation = async (event) => {
+    const { ownerId } = JSON.parse(event.body);
 
+    const checkParams = {
+        TableName: process.env.ACTIVATION_TABLE,
+        FilterExpression: '#ownerId = :ownerIdValue',
+        ExpressionAttributeNames: {
+            '#ownerId': 'ownerId',
+        },
+        ExpressionAttributeValues: {
+            ':ownerIdValue': ownerId,
+        },
+        ProjectionExpression: 'id',  // Use ProjectionExpression to retrieve the 'id'
+    };
 
-module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation};
+    try {
+        const checkResult = await dynamoDb.scan(checkParams).promise();
+        
+        if (checkResult.Items && checkResult.Items.length > 0) {
+            // Assuming there might be multiple items and you want to delete all of them
+            const deletePromises = checkResult.Items.map(async (item) => {
+                const deleteParams = {
+                    TableName: process.env.ACTIVATION_TABLE,
+                    Key: {
+                        id: item.id,  // Use item.id from the scan result
+                    },
+                };
+
+                await dynamoDb.delete(deleteParams).promise();
+            });
+
+            await Promise.all(deletePromises);
+
+            return {
+                statusCode: 200,
+                body: JSON.stringify({ message: 'Aktivasyon başarıyla silindi!' }),
+            };
+        } else {
+            console.log('Bir Aktivasyon Bulunmuyor');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: 'Bir Aktivasyon Bulunmuyor' }),
+            };
+        }
+
+    } catch (error) {
+        console.error("Error: ", error);
+
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: 'Aktivasyon silinemedi!', error: error.message }),
+        };
+    }
+};
+
+module.exports = {handleGetUsersAdmin , handleGetUser, checkActiveStatus , createCompany ,createActivation , handleGetCompany,handleGetWallet,handleGetActivation,deleteActivation};
