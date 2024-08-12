@@ -42,7 +42,7 @@ const handleGetTransactions = async (event) => {
     const { walletId } = JSON.parse(event.body);
 
     const params = {
-        TableName: process.env.TRANSACTIONS_TABLE_TABLE,
+        TableName: process.env.TRANSACTIONS_TABLE,
         FilterExpression: 'walletId = :walletId',
         ExpressionAttributeValues: {
             ':walletId': walletId
