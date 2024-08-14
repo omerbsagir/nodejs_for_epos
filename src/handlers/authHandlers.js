@@ -114,6 +114,16 @@ const handleRegisterForUserRole = async (event) => {
     const createdAt = new Date().toISOString();
     const role = 'user';
 
+
+    const checkParams = {
+        TableName: process.env.USERS_TABLE,
+        FilterExpression: 'adminId = :adminId',
+        ExpressionAttributeValues: {
+            ':adminId': adminId
+        }
+    };
+
+
     const params = {
         TableName: process.env.USERS_TABLE,
         Item: {
@@ -128,27 +138,47 @@ const handleRegisterForUserRole = async (event) => {
     };
 
     try {
+        let lengthCurrentOfUsers;
         
+        const checkResult = dynamoDb.scan(checkParams).promise();
+
+        if(checkResult.statusCode == 200){
+            lengthCurrentOfUsers  = (await checkResult).Items.length;
+        }
+        else{
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ message: 'Could not fetch users', error: error.message })
+            };
+        }
+
+        if(!lengthCurrentOfUsers<=5) {
+            const cognitoParams = {
+                UserPoolId: process.env.COGNITO_USER_POOL_ID,
+                Username: email,
+                UserAttributes: [
+                    { Name: 'email', Value: email },
+                    { Name: 'phone_number', Value: phone } ,
+                    { Name: 'custom:role', Value: role}
+                ],
+                MessageAction: 'SUPPRESS', 
+                TemporaryPassword: password 
+            };
+    
+            await cognito.adminCreateUser(cognitoParams).promise();
+            await dynamoDb.put(params).promise();
+    
+            return {
+                statusCode: 201,
+                body: JSON.stringify({ message: 'User Registration successful' })
+            };
+        }else{
+            return {
+                statusCode: 500,
+                body: JSON.stringify({ message: 'Users are above the limit', error: error.message })
+            };
+        }
         
-        const cognitoParams = {
-            UserPoolId: process.env.COGNITO_USER_POOL_ID,
-            Username: email,
-            UserAttributes: [
-                { Name: 'email', Value: email },
-                { Name: 'phone_number', Value: phone } ,
-                { Name: 'custom:role', Value: role}
-            ],
-            MessageAction: 'SUPPRESS', 
-            TemporaryPassword: password 
-        };
-
-        await cognito.adminCreateUser(cognitoParams).promise();
-        await dynamoDb.put(params).promise();
-
-        return {
-            statusCode: 201,
-            body: JSON.stringify({ message: 'User Registration successful' })
-        };
     } catch (error) {
         console.error("Error: ", error);
 
