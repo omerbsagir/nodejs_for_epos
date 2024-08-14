@@ -140,7 +140,7 @@ const handleRegisterForUserRole = async (event) => {
     try {
         
         const checkResult = dynamoDb.scan(checkParams).promise();
-        const lengthCurrentOfUsers = checkResult.Items.length;
+        const lengthCurrentOfUsers = (await checkResult).Items.length;
         
         if(lengthCurrentOfUsers<5) {
             const cognitoParams = {
