@@ -138,21 +138,11 @@ const handleRegisterForUserRole = async (event) => {
     };
 
     try {
-        let lengthCurrentOfUsers;
         
         const checkResult = dynamoDb.scan(checkParams).promise();
-
-        if(checkResult.statusCode == 200){
-            lengthCurrentOfUsers  = (await checkResult).Items.length;
-        }
-        else{
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ message: 'Could not fetch users', error: error.message })
-            };
-        }
-
-        if(!lengthCurrentOfUsers<=5) {
+        const lengthCurrentOfUsers = checkResult.Items.length;
+        
+        if(lengthCurrentOfUsers<5) {
             const cognitoParams = {
                 UserPoolId: process.env.COGNITO_USER_POOL_ID,
                 Username: email,
