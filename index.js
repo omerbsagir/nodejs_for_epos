@@ -140,18 +140,6 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
-
-            case '/initiate':
-                if (method === 'GET') {
-                    responseMessage = await nfcHandlers.handleInitiate(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;
-
-
             //payment
 
             case '/createTransaction':
@@ -183,15 +171,6 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;    
-            case '/company-id':
-                if (method === 'GET') {
-                    responseMessage = await activationHandlers.returnCompanyId(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;
             case '/checkActiveStatus':
                 if (method === 'POST') {
                     responseMessage = await dbHandlers.checkActiveStatus(event);
