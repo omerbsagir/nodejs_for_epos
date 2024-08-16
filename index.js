@@ -131,15 +131,7 @@ exports.handler = async (event) => {
                 break;  
             //nfc
 
-            case '/verify':
-                if (method === 'POST') {
-                    responseMessage = await nfcHandlers.handleVerify(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;
+        
             //payment
 
             case '/createTransaction':
