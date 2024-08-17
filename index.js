@@ -1,7 +1,6 @@
 const authHandlers = require('./src/handlers/authHandlers');
 const paymentHandlers = require('./src/handlers/paymentHandlers');
 const walletHandlers = require('./src/handlers/walletHandlers');
-const nfcHandlers = require('./src/handlers/nfcHandlers');
 const dbHandlers = require('./src/handlers/dbHandlers');
 
 exports.handler = async (event) => {
@@ -75,51 +74,7 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;
-            case '/getCompany':
-                if (method === 'POST') {
-                    responseMessage = await dbHandlers.handleGetCompany(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;
-            case '/getWallet':
-                if (method === 'POST') {
-                    responseMessage = await dbHandlers.handleGetWallet(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;
-            case '/getActivation':
-                if (method === 'POST') {
-                    responseMessage = await dbHandlers.handleGetActivation(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;    
-            case '/deleteActivation':
-                if (method === 'POST') {
-                    responseMessage = await dbHandlers.deleteActivation(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break;      
-            case '/deleteCompany':
-                if (method === 'POST') {
-                    responseMessage = await dbHandlers.deleteCompany(event);
-                    statusCode = 200;
-                } else {
-                    responseMessage = 'Method Not Allowed';
-                    statusCode = 405;
-                }
-                break; 
+             
             case '/deleteUser':
                 if (method === 'POST') {
                     responseMessage = await dbHandlers.deleteUser(event);
@@ -129,9 +84,7 @@ exports.handler = async (event) => {
                     statusCode = 405;
                 }
                 break;  
-            //nfc
-
-        
+            
             //payment
 
             case '/createTransaction':
@@ -153,7 +106,44 @@ exports.handler = async (event) => {
                 }
                 break;         
                 
-            // activation
+            // company and activation
+            case '/getCompany':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.handleGetCompany(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;
+            
+            case '/getActivation':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.handleGetActivation(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;    
+            case '/deleteActivation':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.deleteActivation(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;     
+            case '/deleteCompany':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.deleteCompany(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break; 
             case '/createActivation':
                 if (method === 'POST') {
                     responseMessage = await dbHandlers.createActivation(event);
@@ -210,7 +200,16 @@ exports.handler = async (event) => {
                     responseMessage = 'Method Not Allowed';
                     statusCode = 405;
                 }
-                break;        
+                break;     
+            case '/getWallet':
+                if (method === 'POST') {
+                    responseMessage = await dbHandlers.handleGetWallet(event);
+                    statusCode = 200;
+                } else {
+                    responseMessage = 'Method Not Allowed';
+                    statusCode = 405;
+                }
+                break;   
             default:
                 responseMessage = 'Not Found';
                 statusCode = 404;
