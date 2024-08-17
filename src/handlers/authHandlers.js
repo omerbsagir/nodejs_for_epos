@@ -6,8 +6,8 @@ const { v4: uuidv4 } = require('uuid');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
-const JWT_SECRET = process.env.JWT_SECRET; // JWT imzalama anahtarı
-const JWT_EXPIRES_IN = '1h'; // JWT'nin geçerlilik süresi
+const JWT_SECRET = process.env.JWT_SECRET; 
+const JWT_EXPIRES_IN = '1h'; 
 
 const handleLogin = async (event) => {
     const { email, password } = JSON.parse(event.body);
