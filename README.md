@@ -17,7 +17,7 @@ Bu proje, **AWS altyapısını kullanarak (Lambda, API Gateway, Cognito, DynamoD
 1. **Node.js** ve **npm** yüklü olduğundan emin olun.
 2. Bu repository'yi klonlayın:
     ```bash
-    git clone https://github.com/kullaniciadi/proje-adi.git
+    git clone https://github.com/omerbsagir/nodejs_for_epos.git
     ```
 3. Proje dizinine gidin:
     ```bash
@@ -101,7 +101,7 @@ This project contains the backend code for a **Flutter** (https://github.com/ome
 1. Make sure you have **Node.js** and **npm** installed.
 2. Clone this repository:
     ```bash
-    git clone https://github.com/username/project-name.git
+    git clone https://github.com/omerbsagir/nodejs_for_epos.git
     ```
 3. Navigate to the project directory:
     ```bash
