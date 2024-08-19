@@ -1,5 +1,7 @@
 # E-POS (Backend Kodu)
 
+
+
 Bu proje, **AWS altyapısını kullanarak (Lambda, API Gateway, Cognito, DynamoDB)** geliştirilmiş bir **Flutter** uygulamasının backend kodlarını içerir. Backend kodları **Node.js** ile yazılmış ve AWS Lambda fonksiyonu olarak yüklenmiştir.
 
 ## Kullanılan AWS Teknolojileri
@@ -77,7 +79,13 @@ Katkıda bulunmak isterseniz, lütfen bir `pull request` gönderin veya bir `iss
 
 ---
 
+
+
+
 # E-POS (Backend Code)
+
+
+
 
 This project contains the backend code for a **Flutter** application developed using **AWS infrastructure (Lambda, API Gateway, Cognito, DynamoDB)**. The backend code is written in **Node.js** and deployed as an AWS Lambda function.
 
