@@ -75,11 +75,6 @@ Katkıda bulunmak isterseniz, lütfen bir `pull request` gönderin veya bir `iss
 
 ---
 
-İşte README dosyasının İngilizce çevirisi:
-
----
-
-
 
 
 # E-POS (Backend Code)
