@@ -2,7 +2,7 @@
 
 
 
-Bu proje, **AWS altyapısını kullanarak (Lambda, API Gateway, Cognito, DynamoDB)** geliştirilmiş bir **Flutter** uygulamasının backend kodlarını içerir. Backend kodları **Node.js** ile yazılmış ve AWS Lambda fonksiyonu olarak yüklenmiştir.
+Bu proje, **AWS altyapısını kullanarak (Lambda, API Gateway, Cognito, DynamoDB)** geliştirilmiş bir **Flutter** (https://github.com/omerbsagir/flutter-sanalpos) uygulamasının backend kodlarını içerir. Backend kodları **Node.js** ile yazılmış ve AWS Lambda fonksiyonu olarak yüklenmiştir.
 
 ## Kullanılan AWS Teknolojileri
 
@@ -87,7 +87,7 @@ Katkıda bulunmak isterseniz, lütfen bir `pull request` gönderin veya bir `iss
 
 
 
-This project contains the backend code for a **Flutter** application developed using **AWS infrastructure (Lambda, API Gateway, Cognito, DynamoDB)**. The backend code is written in **Node.js** and deployed as an AWS Lambda function.
+This project contains the backend code for a **Flutter** (https://github.com/omerbsagir/flutter-sanalpos) application developed using **AWS infrastructure (Lambda, API Gateway, Cognito, DynamoDB)**. The backend code is written in **Node.js** and deployed as an AWS Lambda function.
 
 ## AWS Technologies Used
 
