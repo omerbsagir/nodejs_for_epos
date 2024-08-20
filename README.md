@@ -71,7 +71,7 @@ Uygulamanızda AWS servisleriyle entegrasyon sağlamak için yukarıdaki adımla
 
 ## Katkıda Bulunma
 
-Katkıda bulunmak isterseniz, lütfen bir `pull request` gönderin veya bir `issue` açın. Her türlü geri bildirime açığız!
+Katkıda bulunmak isterseniz, lütfen bir `pull request` gönderin veya bir `issue` açın.
 
 ---
 
@@ -150,4 +150,4 @@ Follow the above steps to integrate AWS services into your application. Once you
 
 ## Contributing
 
-If you wish to contribute, please submit a `pull request` or open an `issue`. All feedback is welcome!
+If you wish to contribute, please submit a `pull request` or open an `issue`.
